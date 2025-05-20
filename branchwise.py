@@ -7,7 +7,7 @@ def filter_tags(tags):
     if pd.isna(tags):
         return False
     tags_str = str(tags).upper()
-    return tags_str.strip() == "ANY" or "A4" in tags_str
+    return tags_str.strip() == "ANY" or "A2" in tags_str
 filtered = sheet1[sheet1['tags'].apply(filter_tags)]
 merged = pd.merge(
     filtered,
@@ -18,3 +18,10 @@ merged = pd.merge(
 result = merged[['station name', 'business domain', 'stipend', 'centre (city)']]
 result.columns = ['name', 'domain', 'stipend', 'location']
 result.to_excel("filtered_companies.xlsx", index=False)
+city = "Hyderabad"
+domain_keyword = "fin"
+final_filtered = result[
+    (result['location'].str.strip().str.lower() == city.lower()) &
+    (result['domain'].str.upper().str.contains(domain_keyword.upper(), na=False))
+]
+final_filtered.to_excel("filtered_companies_by_city_domain.xlsx", index=False)
